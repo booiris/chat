@@ -62,7 +62,7 @@ export default {
   },
   created: function () {
     const start_listen = async () => {
-      return await listen('backend-event', (event) => {
+      return await listen('get-msg', (event) => {
         this.receive(event.payload["message"])
       });
     };
