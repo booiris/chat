@@ -3,6 +3,7 @@
     windows_subsystem = "windows"
 )]
 
+use app::tcp::server::server;
 use tauri::{Manager, Window};
 
 #[tauri::command]
@@ -13,10 +14,6 @@ fn command(text: String) -> String {
 #[tauri::command]
 fn hello() {
     println!("hello world");
-}
-#[derive(Clone, serde::Serialize)]
-struct Payload {
-    message: String,
 }
 
 static mut FLAG: bool = false;
@@ -30,23 +27,12 @@ fn init_process(window: Window) {
         }
         FLAG = true;
     }
-
     println!("init_process is called");
-
-    std::thread::spawn(move || loop {
-        window
-            .emit(
-                "backend-event",
-                Payload {
-                    message: "Tauri is awesome!   ".into(),
-                },
-            )
-            .unwrap();
-        std::thread::sleep(std::time::Duration::from_millis(1000));
-    });
+    tokio::spawn(server(window));
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     tauri::Builder::default()
         .setup(|app| {
             #[cfg(debug_assertions)] // only include this code on debug builds
