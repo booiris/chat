@@ -1,0 +1,54 @@
+{
+  "name": "@run27017/vue-chat",
+  "version": "0.1.1",
+  "main": "dist/chat.umd.min.js",
+  "description": "一个开箱即用的 vue 聊天组件，简单、易用，代码清晰",
+  "license": "MIT",
+  "author": {
+    "name": "Run Ye",
+    "email": "run27017@126.com",
+    "url": "https://github.com/run27017"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/run27017/vue-chat.git"
+  },
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build --target lib --name chat src/components/chat.vue"
+  },
+  "files": [
+    "dist/chat.umd.min.js",
+    "dist/chat.css",
+    "assets",
+    "package.json",
+    "yarn.lock",
+    "README"
+  ],
+  "keywords": [
+    "vue",
+    "chat",
+    "vue-js-chat"
+  ],
+  "dependencies": {
+    "@tauri-apps/api": "^1.2.0",
+    "@vue/compiler-dom": "^3.2.45",
+    "core-js": "^3.6.5",
+    "date-fns": "^2.16.1",
+    "vant": "^2.10.4",
+    "vue": "^2.6.11",
+    "vue-infinite-loading": "^2.4.5"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "sass": "^1.26.5",
+    "sass-loader": "^8.0.2",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
