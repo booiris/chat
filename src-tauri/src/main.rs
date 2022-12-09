@@ -39,7 +39,7 @@ fn init_process(window: Window) {
             .emit(
                 "backend-event",
                 Payload {
-                    message: "Tauri is awesome!".into(),
+                    message: "Tauri is awesome!   ".into(),
                 },
             )
             .unwrap();
