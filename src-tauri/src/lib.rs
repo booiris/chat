@@ -1,3 +1,3 @@
 pub mod tcp;
-mod consts;
-mod model;
+pub mod consts;
+pub mod model;
