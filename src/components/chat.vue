@@ -141,7 +141,10 @@ export default {
   },
   methods: {
     sendText() {
-      invoke('command', { text: this.typingText }).then((message) => { this.send(message) })
+      appWindow.emit('send-msg', { message: this.typingText }).then().catch(err => {
+        console.error(err)
+      })
+      this.send(this.typingText)
       this.typingText = ''
     },
     send(msg) {
