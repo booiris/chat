@@ -1,30 +1,12 @@
 {
-  "name": "@run27017/vue-chat",
+  "name": "chat",
   "version": "0.1.1",
-  "main": "dist/chat.umd.min.js",
-  "description": "一个开箱即用的 vue 聊天组件，简单、易用，代码清晰",
   "license": "MIT",
-  "author": {
-    "name": "Run Ye",
-    "email": "run27017@126.com",
-    "url": "https://github.com/run27017"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/run27017/vue-chat.git"
-  },
+  "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name chat src/components/chat.vue"
+    "build": "vue-cli-service build"
   },
-  "files": [
-    "dist/chat.umd.min.js",
-    "dist/chat.css",
-    "assets",
-    "package.json",
-    "yarn.lock",
-    "README"
-  ],
   "keywords": [
     "vue",
     "chat",

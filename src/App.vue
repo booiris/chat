@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import ChatBox from '..'
-import '../dist/chat.css'
+import ChatBox from './components/chat.vue'
+import './chat.css'
 
 export default {
   name: 'ChatDemo',

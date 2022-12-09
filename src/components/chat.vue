@@ -53,7 +53,7 @@ import { emit, listen } from '@tauri-apps/api/event'
 import { antiquewhite } from 'color-name'
 
 export default {
-  name: 'Chat',
+  name: 'ChatBox',
   components: {
     InfiniteLoading,
     'van-button': VanButton,
