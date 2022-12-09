@@ -1,0 +1,36 @@
+{
+  "name": "chat",
+  "version": "0.1.1",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "keywords": [
+    "vue",
+    "chat",
+    "vue-js-chat"
+  ],
+  "dependencies": {
+    "@tauri-apps/api": "^1.2.0",
+    "@vue/compiler-dom": "^3.2.45",
+    "core-js": "^3.6.5",
+    "date-fns": "^2.16.1",
+    "vant": "^2.10.4",
+    "vue": "^2.6.11",
+    "vue-infinite-loading": "^2.4.5"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "sass": "^1.26.5",
+    "sass-loader": "^8.0.2",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
