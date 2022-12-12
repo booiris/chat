@@ -4,6 +4,7 @@ use tauri::Window;
 use tokio::io::AsyncBufReadExt;
 use tokio::net::tcp::OwnedReadHalf;
 use tokio::net::{TcpListener, TcpStream};
+use tokio::sync::mpsc;
 
 pub async fn server(window: Window) {
     let listener = TcpListener::bind(format!("{}:{}", IP, SERVER_PORT))
@@ -41,9 +42,10 @@ async fn read_from_client(reader: OwnedReadHalf, window: Window) {
                 break;
             }
             Ok(_) => {
-                let message = buf.drain(..).as_str().to_string();
-                window.emit("get-msg", Payload { message }).unwrap();
+                // let message = buf.drain(..).as_str().to_string();
+                // window.emit("get-msg", Payload { message }).unwrap();
             }
         }
     }
+    let (msg_tx, msg_rx) = mpsc::channel::<String>(100);
 }
