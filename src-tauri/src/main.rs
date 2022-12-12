@@ -3,9 +3,12 @@
     windows_subsystem = "windows"
 )]
 
-use app::service::tcp::client::send_msg;
+use std::sync::Arc;
+
+use app::service::tcp::client::Client;
 
 use app::service::tcp::server::server;
+use env_logger::Env;
 use tauri::{Manager, Window};
 
 static mut FLAG: bool = false;
@@ -25,6 +28,8 @@ fn init_process(window: Window) {
 
 #[tokio::main]
 async fn main() {
+    env_logger::Builder::from_env(Env::default().default_filter_or("debug")).init();
+    let client = Arc::new(Client::new());
     tauri::Builder::default()
         .setup(|app| {
             #[cfg(debug_assertions)] // only include this code on debug builds
@@ -35,13 +40,9 @@ async fn main() {
 
             let main_window = app.get_window("main").unwrap();
 
-            main_window.listen("send-msg", |event| {
-                tokio::spawn(async move {
-                    match send_msg(event.payload()).await {
-                        Ok(()) => (),
-                        Err(err) => eprintln!("error: {}", err),
-                    }
-                });
+            main_window.listen("send-msg", move |event| {
+                let client = client.clone();
+                tokio::spawn(async move { client.send_msg(123, event.payload()).await });
             });
 
             Ok(())
