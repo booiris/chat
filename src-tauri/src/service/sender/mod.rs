@@ -5,7 +5,7 @@ use tokio::{
     sync::mpsc::Receiver,
 };
 
-use log::{debug, error};
+use log::{debug, error, info};
 use tokio::net::TcpStream;
 
 use crate::{
@@ -62,10 +62,10 @@ impl Client {
     }
 
     async fn get_stream(&mut self) -> Result<(), Box<dyn Error + Send + Sync>> {
-        let mut stream = TcpStream::connect(format!("{}:{}", PROXY_IP, PROXY_PORT)).await?;
-
         loop {
+            let mut stream = TcpStream::connect(format!("{}:{}", PROXY_IP, PROXY_PORT)).await?;
             let my_local_ip = local_ip().unwrap().to_string();
+            info!("{}", my_local_ip);
             let id_struct = IdStruct {
                 id: self.from_id,
                 ip: my_local_ip,
