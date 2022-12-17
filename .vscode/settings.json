@@ -3,14 +3,13 @@
     "rust": "html"
   },
   "files.exclude": {
-    "**/dist": true,
+    // "**/dist": true,
     "**/target": true,
-    "**/public": true,
+    // "**/public": true,
     "**/node_modules": true,
-    "**/yarn.lock": true,
-    "**/package.json": true,
-    "babel.config.js": true,
-    "**/src-tauri": true
+    // "**/yarn.lock": true,
+    // "**/package.json": true,
+    // "babel.config.js": true,
   },
   "code-runner.runInTerminal": false,
   // 运行代码之前清除之前的输出
