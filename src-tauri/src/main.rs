@@ -14,6 +14,7 @@ fn command(text: String) -> String {
 fn hello() {
     println!("hello world");
 }
+ads
 #[derive(Clone, serde::Serialize)]
 struct Payload {
     message: String,
@@ -25,7 +26,7 @@ static mut FLAG: bool = false;
 fn init_process(window: Window) {
     unsafe {
         if FLAG {
-            println!("init_process has been called");
+            println!("init_process has been called"); 
             return;
         }
         FLAG = true;
@@ -58,9 +59,9 @@ fn main() {
             let main_window = app.get_window("main").unwrap();
 
             main_window.listen("front-event", |event| {
-                println!("got window event-name with payload {:?}", event.payload());
+              println!("got window event-name with payload {:?}", event.payload());
             });
-
+      
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![command, hello, init_process])
