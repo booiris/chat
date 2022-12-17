@@ -1,8 +1,7 @@
 use crate::consts::*;
 use crate::model::Payload;
-use log::{error, info};
 use tauri::Window;
-use tokio::io::{AsyncBufReadExt, AsyncReadExt};
+use tokio::io::AsyncBufReadExt;
 use tokio::net::tcp::OwnedReadHalf;
 use tokio::net::{TcpListener, TcpStream};
 use tokio::sync::mpsc;
@@ -15,7 +14,7 @@ pub async fn server(window: Window) {
         match listener.accept().await {
             Ok((socket, addr)) => {
                 let window = window.clone();
-                info!("new client: {:?}", addr);
+                println!("new client: {:?}", addr);
                 tokio::spawn(async move {
                     process(socket, window).await;
                 });
@@ -32,26 +31,21 @@ async fn process(socket: TcpStream, window: Window) {
 
 async fn read_from_client(reader: OwnedReadHalf, window: Window) {
     let mut buf_reader = tokio::io::BufReader::new(reader);
-    let mut buffer = Vec::new();
-    let mut data = Vec::new();
+    let mut buf = String::new();
     loop {
-        match buf_reader.read_buf(&mut buffer).await {
-            Err(err) => {
-                error!("read from client error, err: {}", err);
+        match buf_reader.read_line(&mut buf).await {
+            Err(_e) => {
+                eprintln!("read from client error");
                 break;
             }
             Ok(0) => {
                 break;
             }
             Ok(_) => {
-                data.append(&mut buffer);
+                // let message = buf.drain(..).as_str().to_string();
+                // window.emit("get-msg", Payload { message }).unwrap();
             }
         }
     }
-    window
-        .emit(
-            "get-msg",
-            data.into_iter().map(|x| x as char).collect::<String>(),
-        )
-        .unwrap();
+    let (msg_tx, msg_rx) = mpsc::channel::<String>(100);
 }

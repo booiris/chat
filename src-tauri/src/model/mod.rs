@@ -1,7 +1,7 @@
-#[derive(Clone, serde::Serialize, serde::Deserialize, Debug)]
+#[derive(Clone, serde::Serialize, serde::Deserialize)]
 pub struct Payload {
-    pub text: String,
-    pub time: String,
+    pub message: String,
+    pub time: time
 }
 
 #[derive(Clone, serde::Serialize, serde::Deserialize, Debug)]
@@ -14,15 +14,4 @@ pub struct IdStruct {
 #[derive(Clone, serde::Serialize, serde::Deserialize, Debug)]
 pub struct DbData {
     pub id_data: IdStruct,
-}
-
-#[derive(Clone, serde::Serialize, serde::Deserialize, Debug)]
-pub struct ClientReq {
-    pub client: IdStruct,
-    pub aim_user: i64,
-}
-
-#[derive(Clone, serde::Serialize, serde::Deserialize, Debug)]
-pub struct ClientResp {
-    pub aim_user: Option<IdStruct>,
 }

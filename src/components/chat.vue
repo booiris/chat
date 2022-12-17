@@ -63,8 +63,7 @@ export default {
   created: function () {
     const start_listen = async () => {
       return await listen('get-msg', (event) => {
-        console.log(event.payload)
-        this.receive(JSON.parse(event.payload))
+        this.receive(event.payload["message"])
       });
     };
     // this.unlisten = start_listen();
@@ -108,21 +107,13 @@ export default {
     sendMessage: {
       type: Function,
       default({ text }) {
-        return {
-          text,
-          time: new Date(),
-          direction: 'sent'
-        }
+        return { text }
       }
     },
     receiveMessage: {
       type: Function,
       default({ text }) {
-        return {
-          text,
-          time: new Date(),
-          direction: 'received'
-        }
+        return { text }
       }
     }
   },
@@ -150,14 +141,14 @@ export default {
   },
   methods: {
     sendText() {
+      appWindow.emit('send-msg', { message: this.typingText }).then().catch(err => {
+        console.error(err)
+      })
       this.send(this.typingText)
       this.typingText = ''
     },
     send(msg) {
       const message = this.sendMessage({ text: msg })
-      appWindow.emit('send-msg', message).then().catch(err => {
-        console.error(err)
-      })
       if (message instanceof Promise) {
         message.then(
           message => this.appendNew(
@@ -168,8 +159,8 @@ export default {
         this.appendNew(Object.assign({ time: new Date(), direction: 'sent' }, message))
       }
     },
-    receive(message) {
-      message.direction = 'received'
+    receive(msg) {
+      const message = this.receiveMessage({ text: msg })
       if (message instanceof Promise) {
         message.then(
           message =>
@@ -197,7 +188,7 @@ export default {
       })
     },
     appendNew(...messages) {
-      messages = messages.map(message => Object.assign({ direction: 'received', time: new Date() }, message))
+      messages = messages.map(message => Object.assign({ direction: 'received' }, message))
       this.messages.push(...messages)
       this.$nextTick(this.scrollToBottom)
     },
