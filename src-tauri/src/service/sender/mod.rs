@@ -46,7 +46,7 @@ impl Client {
                 break;
             }
         }
-        debug!("connect: ({} : {}) exit", self.from_id, self.to_id);
+        debug!("connect: ({} : {}) exit!", self.from_id, self.to_id);
     }
 
     async fn handle_data(&mut self, data: String) -> Result<(), Box<dyn Error + Send + Sync>> {
