@@ -3,9 +3,9 @@
     windows_subsystem = "windows"
 )]
 
-use app::service::tcp::client::send_msg;
+use app::tcp::client::send_msg;
 
-use app::service::tcp::server::server;
+use app::tcp::server::server;
 use tauri::{Manager, Window};
 
 static mut FLAG: bool = false;
