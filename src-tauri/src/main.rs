@@ -14,7 +14,7 @@ fn command(text: String) -> String {
 fn hello() {
     println!("hello world");
 }
-ads
+
 #[derive(Clone, serde::Serialize)]
 struct Payload {
     message: String,
