@@ -62,8 +62,9 @@ export default {
   },
   created: function () {
     const start_listen = async () => {
-      return await listen('backend-event', (event) => {
-        this.receive(event.payload["message"])
+      return await listen('get-msg', (event) => {
+        console.log(event.payload)
+        this.receive(JSON.parse(event.payload))
       });
     };
     // this.unlisten = start_listen();
@@ -107,13 +108,21 @@ export default {
     sendMessage: {
       type: Function,
       default({ text }) {
-        return { text }
+        return {
+          text,
+          time: new Date(),
+          direction: 'sent'
+        }
       }
     },
     receiveMessage: {
       type: Function,
       default({ text }) {
-        return { text }
+        return {
+          text,
+          time: new Date(),
+          direction: 'received'
+        }
       }
     }
   },
@@ -141,11 +150,14 @@ export default {
   },
   methods: {
     sendText() {
-      invoke('command', { text: this.typingText }).then((message) => { this.send(message) })
+      this.send(this.typingText)
       this.typingText = ''
     },
     send(msg) {
       const message = this.sendMessage({ text: msg })
+      appWindow.emit('send-msg', message).then().catch(err => {
+        console.error(err)
+      })
       if (message instanceof Promise) {
         message.then(
           message => this.appendNew(
@@ -156,8 +168,8 @@ export default {
         this.appendNew(Object.assign({ time: new Date(), direction: 'sent' }, message))
       }
     },
-    receive(msg) {
-      const message = this.receiveMessage({ text: msg })
+    receive(message) {
+      message.direction = 'received'
       if (message instanceof Promise) {
         message.then(
           message =>
@@ -185,7 +197,7 @@ export default {
       })
     },
     appendNew(...messages) {
-      messages = messages.map(message => Object.assign({ direction: 'received' }, message))
+      messages = messages.map(message => Object.assign({ direction: 'received', time: new Date() }, message))
       this.messages.push(...messages)
       this.$nextTick(this.scrollToBottom)
     },

@@ -3,51 +3,36 @@
     windows_subsystem = "windows"
 )]
 
+use std::sync::Arc;
+
+use app::service::tcp::client_porxy::ClientProxy;
+
+use app::service::tcp::server::server;
+use env_logger::Env;
+use log::error;
 use tauri::{Manager, Window};
 
-#[tauri::command]
-fn command(text: String) -> String {
-    format!("invoke: {}", text)
-}
-
-#[tauri::command]
-fn hello() {
-    println!("hello world");
-}
-
-#[derive(Clone, serde::Serialize)]
-struct Payload {
-    message: String,
-}
-
 static mut FLAG: bool = false;
+
+const NOW_ID: i64 = 0;
 
 #[tauri::command]
 fn init_process(window: Window) {
     unsafe {
         if FLAG {
-            println!("init_process has been called"); 
+            println!("init_process has been called");
             return;
         }
         FLAG = true;
     }
-
     println!("init_process is called");
-
-    std::thread::spawn(move || loop {
-        window
-            .emit(
-                "backend-event",
-                Payload {
-                    message: "Tauri is awesome!   ".into(),
-                },
-            )
-            .unwrap();
-        std::thread::sleep(std::time::Duration::from_millis(1000));
-    });
+    tokio::spawn(server(window));
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
+    env_logger::Builder::from_env(Env::default().default_filter_or("debug")).init();
+    let client_proxy = Arc::new(ClientProxy::new(NOW_ID));
     tauri::Builder::default()
         .setup(|app| {
             #[cfg(debug_assertions)] // only include this code on debug builds
@@ -58,13 +43,18 @@ fn main() {
 
             let main_window = app.get_window("main").unwrap();
 
-            main_window.listen("front-event", |event| {
-              println!("got window event-name with payload {:?}", event.payload());
+            main_window.listen("send-msg", move |event| {
+                let client_proxy = client_proxy.clone();
+                tokio::spawn(async move {
+                    if let Some(err) = client_proxy.send_msg(1, event.payload()).await.err() {
+                        error!("send msg error! err: {}", err);
+                    };
+                });
             });
-      
+
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![command, hello, init_process])
+        .invoke_handler(tauri::generate_handler![init_process])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
