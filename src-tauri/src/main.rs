@@ -3,8 +3,6 @@
     windows_subsystem = "windows"
 )]
 
-use std::sync::Arc;
-
 use app::service::tcp::client_porxy::ClientProxy;
 
 use app::service::tcp::server::server;
@@ -32,7 +30,7 @@ fn init_process(window: Window) {
 #[tokio::main]
 async fn main() {
     env_logger::Builder::from_env(Env::default().default_filter_or("debug")).init();
-    let client_proxy = Arc::new(ClientProxy::new(NOW_ID));
+    let client_proxy = ClientProxy::new(NOW_ID);
     tauri::Builder::default()
         .setup(|app| {
             #[cfg(debug_assertions)] // only include this code on debug builds
@@ -44,12 +42,9 @@ async fn main() {
             let main_window = app.get_window("main").unwrap();
 
             main_window.listen("send-msg", move |event| {
-                let client_proxy = client_proxy.clone();
-                tokio::spawn(async move {
-                    if let Some(err) = client_proxy.send_msg(1, event.payload()).await.err() {
-                        error!("send msg error! err: {}", err);
-                    };
-                });
+                if let Some(err) = client_proxy.send_msg(1, event.payload()).err() {
+                    error!("send msg error! err: {}", err);
+                }
             });
 
             Ok(())
