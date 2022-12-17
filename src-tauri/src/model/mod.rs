@@ -1,4 +1,4 @@
-#[derive(Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, serde::Serialize)]
 pub struct Payload {
     pub message: String,
 }
