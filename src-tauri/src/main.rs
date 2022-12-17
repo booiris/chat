@@ -46,7 +46,7 @@ async fn main() {
             main_window.listen("send-msg", move |event| {
                 let client_proxy = client_proxy.clone();
                 tokio::spawn(async move {
-                    if let Some(err) = client_proxy.send_msg(1, event.payload()).await.err() {
+                    if let Some(err) = client_proxy.send_msg(0, event.payload()).await.err() {
                         error!("send msg error! err: {}", err);
                     };
                 });
