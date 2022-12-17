@@ -20,8 +20,8 @@
     // g++ $fileName -o build/$fileNameWithoutExt && .\\build\\$fileNameWithoutExt
     // "rust": "rustc --cfg feature=\\\"local\\\" $fileName -o $workspaceRoot/build/$fileNameWithoutExt -A unused_imports -A unused_macros&& RUST_BACKTRACE=1 $workspaceRoot/build/$fileNameWithoutExt"
     // "rust": "rustc $fileName -o $workspaceRoot/build/$fileNameWithoutExt -A unused_imports -A unused_macros&& RUST_BACKTRACE=1 $workspaceRoot/build/$fileNameWithoutExt"
-    "rust": "cd $workspaceRoot && RUST_BACKTRACE=1 cargo tauri dev",
-    "vue": "cd $workspaceRoot && RUST_BACKTRACE=1 cargo tauri dev"
+    "rust": "cd $workspaceRoot && cd ../ && RUST_BACKTRACE=1 cargo tauri dev",
+    "vue": "cd $workspaceRoot && cd ../ && RUST_BACKTRACE=1 cargo tauri dev"
     // "rust": "cd $workspaceRoot && trunk serve"
   },
   "code-runner.saveFileBeforeRun": true,

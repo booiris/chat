@@ -22,31 +22,35 @@ impl ClientProxy {
 }
 
 impl ClientProxy {
-    pub fn send_msg(&self, to_id: i64, pay_load: Option<&str>) -> Result<(), Box<dyn Error + '_>> {
+    pub async fn send_msg(
+        &self,
+        to_id: i64,
+        pay_load: Option<&str>,
+    ) -> Result<(), Box<dyn Error + '_>> {
         if pay_load.is_none() {
             return Ok(());
         }
-        let mut connections = self.connections.try_lock()?;
+        let conn;
         let pay_load = pay_load.unwrap().to_string();
-        match connections.get(&to_id) {
-            Some(conn) => {
-                let conn = conn.clone();
-                drop(connections);
-                conn.blocking_send(pay_load)?;
-            }
-            None => {
-                let (sender, receiver) = mpsc::channel::<String>(100);
-                let from_id = self.from_id;
-                // tokio::spawn(async move {
-                //     let mut client = Client::new(from_id, to_id, receiver);
-                //     client.run().await;
-                // });
-                let conn = sender.clone();
-                connections.insert(to_id, sender);
-                drop(connections);
-                conn.blocking_send(pay_load)?;
+        {
+            let mut connections = self.connections.try_lock()?;
+            match connections.get(&to_id) {
+                Some(connection) => {
+                    conn = connection.clone();
+                }
+                None => {
+                    let (sender, receiver) = mpsc::channel::<String>(100);
+                    let from_id = self.from_id;
+                    tokio::spawn(async move {
+                        let mut client = Client::new(from_id, to_id, receiver);
+                        client.run().await;
+                    });
+                    conn = sender.clone();
+                    connections.insert(to_id, sender);
+                }
             }
         }
+        conn.send(pay_load).await?;
         Ok(())
     }
 }
